@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#2e7d5b">
+<title>Instrukcja: Przewodnik gotowania</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f6f3ee; --card: #fff; --ink: #222; --muted: #666; --line: #ddd5c8; --brand: #2e7d5b; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1b1d1c; --card: #262928; --ink: #eee; --muted: #aaa; --line: #3a3e3c; --brand: #5fc095; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.55 system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+  main { max-width: 760px; margin: 0 auto; padding: 16px 16px 48px; }
+  h1 { font-size: 1.6rem; margin: 8px 0 4px; }
+  h2 { font-size: 1.25rem; margin: 28px 0 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.02rem; margin: 18px 0 4px; }
+  a { color: var(--brand); }
+  .back { display: inline-block; margin-bottom: 8px; font-weight: 600; }
+  .muted { color: var(--muted); }
+  nav.toc { background: var(--card); border-radius: 12px; padding: 10px 16px; margin: 14px 0; }
+  nav.toc ol { margin: 4px 0; padding-left: 20px; columns: 2; }
+  @media (max-width: 520px) { nav.toc ol { columns: 1; } }
+  .box { background: var(--card); border-radius: 12px; padding: 4px 16px 12px; margin: 10px 0; }
+  .tip, .warn { border-left: 4px solid var(--brand); background: var(--card); padding: 8px 12px; border-radius: 0 10px 10px 0; margin: 10px 0; }
+  .warn { border-color: #c77700; }
+  code, kbd { background: var(--line); border-radius: 5px; padding: 1px 6px; font-size: .92em; }
+  ol, ul { padding-left: 22px; }
+  li { margin: 3px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: .92rem; }
+  th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: var(--card); }
+  @media print { .back, nav.toc { display: none; } body { background: #fff; color: #000; } }
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="przewodnik-gotowania.html">&larr; Wróć do aplikacji</a>
+<h1>Przewodnik gotowania: instrukcja</h1>
+<p class="muted">Instalacja na komputerze i telefonie, obsługa, kopie zapasowe i przenoszenie przepisów między urządzeniami.</p>
+
+<nav class="toc" aria-label="Spis treści"><b>Spis treści</b>
+<ol>
+  <li><a href="#start">Jak to działa</a></li>
+  <li><a href="#pc">Instalacja na komputerze</a></li>
+  <li><a href="#phone">Instalacja na telefonie</a></li>
+  <li><a href="#przepisy">Przepisy i gotowanie</a></li>
+  <li><a href="#plan">Plan, zakupy, lodówka</a></li>
+  <li><a href="#poradnik">Poradnik i składniki aktywne</a></li>
+  <li><a href="#tabela">Tabela składników</a></li>
+  <li><a href="#kopie">Kopie zapasowe i przenoszenie</a></li>
+  <li><a href="#problemy">Rozwiązywanie problemów</a></li>
+  <li><a href="#bezpieczenstwo">Bezpieczeństwo danych i ograniczenia</a></li>
+  <li><a href="#dev">Dla programisty: testy</a></li>
+</ol></nav>
+
+<h2 id="start">1. Jak to działa</h2>
+<p>Aplikacja działa w przeglądarce i nie wymaga konta ani internetu po pierwszym uruchomieniu. Wszystkie Twoje dane (własne przepisy, oceny, notatki, tagi, kolekcje, plan, zakupy, zdjęcia, własne wartości odżywcze) zapisują się <b>tylko na tym urządzeniu i w tej przeglądarce</b>.</p>
+<div class="warn"><b>Ważne:</b> komputer i telefon nie synchronizują się same. Przepisy przenosisz ręcznie przez plik kopii (rozdział 8). Dane są też przypisane do adresu strony: <code>http://localhost:8000</code>, adres w internecie i otwarcie pliku z dysku to trzy osobne magazyny.</div>
+
+<h2 id="pc">2. Instalacja na komputerze</h2>
+<h3>Wariant A: uruchomienie lokalne (Windows)</h3>
+<ol>
+  <li>Skopiuj cały folder <code>przepisy</code> w dowolne miejsce na dysku.</li>
+  <li>Zainstaluj Pythona (python.org) lub Node.js, jeśli nie masz żadnego z nich.</li>
+  <li>Uruchom dwukrotnie plik <code>start.bat</code>. Otworzy się przeglądarka z aplikacją pod adresem <code>http://localhost:8000/przewodnik-gotowania.html</code>.</li>
+  <li>Okno konsoli musi pozostać otwarte, dopóki korzystasz z aplikacji. Zamknięcie lub Ctrl+C zatrzymuje serwer.</li>
+</ol>
+<div class="tip">Zawsze używaj tego samego adresu i portu (8000). Inny port to inna pamięć przeglądarki, więc przepisy wydadzą się &bdquo;zniknięte&rdquo;. Wrócą po powrocie na poprzedni adres.</div>
+<h3>Instalacja jako aplikacja (Chrome lub Edge)</h3>
+<ol>
+  <li>Najprościej użyj przycisku <b>Zainstaluj aplikację</b> na dole listy przepisów (pojawia się, gdy przeglądarka pozwala na instalację).</li>
+  <li>Można też kliknąć ikonę instalacji po prawej stronie paska adresu (monitor ze strzałką) albo menu <b>&vellip; &rarr; Zapisz i udostępnij &rarr; Zainstaluj stronę jako aplikację</b> (Edge: <b>Aplikacje &rarr; Zainstaluj tę witrynę jako aplikację</b>).</li>
+  <li>Aplikacja pojawi się w menu Start i otworzy w osobnym oknie. Wciąż potrzebuje działającego serwera z <code>start.bat</code>, chyba że wcześniej została otwarta online (patrz niżej).</li>
+</ol>
+<h3>Wariant B: wersja online (zalecana, bez serwera na komputerze)</h3>
+<p>Wystarczy umieścić zawartość folderu <code>przepisy</code> na darmowym hostingu statycznym z HTTPS (np. GitHub Pages, Cloudflare Pages, Netlify). Zyskujesz jeden adres działający na komputerze i telefonie, pełną instalację i tryb offline. Szczegóły w rozdziale 3.</p>
+
+<h2 id="phone">3. Instalacja na telefonie</h2>
+<p>Instalacja jako aplikacja (ikona na ekranie głównym, pełny ekran, praca offline) wymaga adresu z <b>HTTPS</b>. Pliku z dysku komputera ani zwykłego adresu <code>http://192.168...</code> w sieci domowej przeglądarka telefonu nie zainstaluje jako aplikacji offline.</p>
+<h3>Szybki podgląd bez hostingu (tylko ta sama sieć Wi-Fi)</h3>
+<p><code>start.bat</code> wypisuje w konsoli adres w stylu <code>http://192.168.x.x:8000/przewodnik-gotowania.html</code>. Wpisz go w przeglądarce telefonu podłączonego do tej samej sieci. To tylko podgląd: bez instalacji i trybu offline, a dane zapisane w ten sposób są osobnym magazynem. Komputer musi być włączony, a zapora Windows może poprosić o zgodę na połączenia przychodzące w sieci prywatnej.</p>
+<h3>Krok 1: udostępnij aplikację pod adresem HTTPS</h3>
+<ol>
+  <li>Załóż darmowe konto na wybranym hostingu statycznym (np. GitHub Pages lub Cloudflare Pages).</li>
+  <li>Wgraj zawartość folderu <code>przepisy</code> (pliki <code>przewodnik-gotowania.html</code>, <code>instrukcja.html</code>, <code>manifest.webmanifest</code>, <code>icon.svg</code>, <code>sw.js</code> i folder <code>pg</code>). Zachowaj układ folderów.</li>
+  <li>Zapisz otrzymany adres, np. <code>https://twojanazwa.github.io/przepisy/przewodnik-gotowania.html</code>.</li>
+</ol>
+<div class="tip">Na serwerze publicznym są tylko wbudowane przepisy. Twoje własne dane zostają w telefonie i na serwer nie trafiają.</div>
+<h3>Krok 2: Android (Chrome)</h3>
+<ol>
+  <li>Otwórz adres w Chrome.</li>
+  <li>Menu <b>&vellip; &rarr; Zainstaluj aplikację</b> (lub <b>Dodaj do ekranu głównego</b>) albo przycisk <b>Zainstaluj aplikację</b> na dole listy przepisów.</li>
+  <li>Potwierdź. Ikona &bdquo;Gotowanie&rdquo; pojawi się na ekranie głównym.</li>
+</ol>
+<h3>Krok 2: iPhone i iPad (Safari)</h3>
+<ol>
+  <li>Otwórz adres w <b>Safari</b> (inne przeglądarki nie zapisują aplikacji na ekranie głównym).</li>
+  <li>Dotknij <b>Udostępnij</b> (kwadrat ze strzałką) &rarr; <b>Do ekranu początkowego</b> &rarr; <b>Dodaj</b>.</li>
+  <li>Uruchamiaj aplikację z tej ikony.</li>
+</ol>
+<div class="warn">Na iPhonie dane zwykłej strony w Safari mogą zostać usunięte po dłuższym nieużywaniu. Zainstalowana ikona na ekranie głównym jest bezpieczniejsza, ale i tak rób regularną kopię zapasową (rozdział 8).</div>
+<h3>Po instalacji</h3>
+<ul>
+  <li>Aplikacja po pierwszym otwarciu online działa bez internetu. Gdy wgrasz nową wersję na serwer, zaktualizuje się przy następnym uruchomieniu z siecią (czasem po dwukrotnym otwarciu).</li>
+  <li>Timery działają w tle przy włączonych powiadomieniach. Zezwól na nie, gdy przeglądarka zapyta.</li>
+  <li>Podczas gotowania ekran nie gaśnie (jeśli telefon to obsługuje).</li>
+</ul>
+
+<h2 id="przepisy">4. Przepisy i gotowanie</h2>
+<h3>Lista przepisów</h3>
+<ul>
+  <li><b>Szukaj</b>: nazwa, składnik, tag lub notatka.</li>
+  <li><b>Filtry</b>: min. ocena, sortowanie, grupowanie, kolekcje, ulubione i tagi (m.in. diety, kuchnie, sezony, <i>Z ogrodu</i>, <i>World best</i>).</li>
+  <li>Baner wznawia ostatnio gotowany przepis. Drugi baner przypomina o kopii zapasowej.</li>
+</ul>
+<h3>Widok przepisu</h3>
+<ul>
+  <li><b>Porcje i jednostki</b>: przyciski +/− przeliczają składniki. Selektor jednostek pokazuje wagowo (g) lub w łyżkach i szklankach.</li>
+  <li><b>Alergeny i wartości odżywcze</b> na porcję. To szacunek na podstawie rozpoznanych składników. Przycisk <i>Edytuj wartości składników</i> pozwala je poprawić.</li>
+  <li><b>Składniki aktywne</b>: związki obecne w daniu (np. allicyna z czosnku, sulforafan z jarmużu) z opisem, na co wpływają, jak je aktywować i kiedy się tracą.</li>
+  <li><b>Do listy zakupów</b> dodaje składniki w wybranej liczbie porcji.</li>
+  <li>Ocena gwiazdkami, serduszko (ulubione), tagi, kolekcje, historia gotowania i notatki.</li>
+  <li>Przyciski: <i>Edytuj</i>, <i>Kopiuj i edytuj</i> (własna wersja wbudowanego przepisu), <i>Drukuj</i>, <i>Udostępnij</i>, <i>Eksport</i> (jeden przepis do pliku), <i>Usuń</i> (działa też dla przepisów wbudowanych, z opcją cofnięcia).</li>
+</ul>
+<h3>Usuwanie przepisów</h3>
+<ul>
+  <li><b>Jeden przepis</b>: przycisk <i>Usuń</i> w widoku przepisu, także dla wbudowanych. Zaraz po usunięciu możesz użyć <i>Cofnij</i>.</li>
+  <li><b>Kilka wybranych</b>: przycisk <i>Wybierz</i> w nagłówku listy włącza zaznaczanie. Dotykasz przepisów, aby je zaznaczyć, a pasek u góry ma przyciski <i>Wszystkie</i> (widoczne po filtrach), <i>Żadne</i> i <i>Usuń</i>. <i>Gotowe</i> kończy zaznaczanie. Po usunięciu dostępne jest <i>Cofnij</i>.</li>
+  <li><b>Wszystkie na raz</b>: przycisk <i>Usuń wszystkie przepisy</i> na dole listy usuwa przepisy własne i wbudowane razem z ocenami, notatkami i zdjęciami. Wymaga wpisania słowa <code>USUŃ</code>. Kolekcje zostają (puste), plan tygodnia zostaje wyczyszczony z usuniętych przepisów, a lista zakupów nie jest kasowana. Przez kilka sekund dostępne jest <i>Cofnij</i> (przywraca też plan), potem zmiany są nieodwracalne, więc wcześniej zrób kopię zapasową.</li>
+  <li><b>Przywracanie wbudowanych</b>: po usunięciu dowolnego wbudowanego przepisu na dole listy pojawia się <i>Przywróć wbudowane przepisy</i>. Przywraca wszystkie w wersji fabrycznej (bez dawnych ocen i notatek).</li>
+  <li>Usunięcie przepisu (pojedynczo lub zaznaczonych) usuwa też jego wpisy z planu tygodnia. <i>Cofnij</i> przywraca je razem z przepisem. Zapisane plany pomijają brakujące przepisy przy wczytywaniu.</li>
+</ul>
+<h3>Wyszukiwanie duplikatów</h3>
+<p>Przycisk <i>Znajdź duplikaty</i> na dole listy pokazuje grupy przepisów o tej samej nazwie (dopisek &bdquo;(kopia)&rdquo; jest pomijany), liczbie porcji i składnikach, także względem wbudowanych. W każdej grupie widzisz, który przepis aplikacja sugeruje zachować (wbudowany lub z najwyższymi ocenami, historią i notatkami). Możesz otworzyć przepis, usunąć wybrany albo użyć <i>Zostaw jeden, usuń resztę</i>. Przed usunięciem aplikacja pyta o potwierdzenie, ale w tym oknie nie ma <i>Cofnij</i>. Kroki w duplikatach mogą się różnić, więc sprawdź je przed usunięciem.</p>
+<h3>Tryb gotowania</h3>
+<ol>
+  <li>Naciśnij <b>Zaczynamy gotować</b>. Przepis dzieli się na kroki z paskiem postępu i składnikami potrzebnymi w danym kroku.</li>
+  <li><b>Dalej / Wstecz</b> przesuwa kroki. Kroki z czasem mają timer (start, pauza, reset) i dzwonią lub wibrują po zakończeniu.</li>
+  <li><b>+ Własny timer</b> ustawia dowolny czas. Kilka timerów działa równocześnie, widać je na górnym pasku.</li>
+  <li>Ikona głośnika czyta krok na głos, <b>Aa</b> włącza duży tryb. Mikrofon (jeśli przeglądarka go obsługuje) przyjmuje polecenia: <i>dalej, wstecz, start, stop, powtórz</i>.</li>
+</ol>
+<h3>Dodawanie własnych przepisów</h3>
+<ul>
+  <li><b>+ Nowy</b>: formularz z nazwą, zdjęciem, porcjami, czasem, składnikami i krokami (z opcjonalnymi ustawieniami czasu, temperatury i obrotów).</li>
+  <li><b>Import</b> (przycisk na liście): wklej tekst przepisu, kod strony lub JSON-LD albo podaj adres strony. Wynik sprawdź i popraw przed zapisaniem.</li>
+</ul>
+
+<h2 id="plan">5. Plan, zakupy, lodówka</h2>
+<ul>
+  <li><b>Plan</b>: dodajesz przepisy do dni tygodnia, wybierasz posiłek i liczbę porcji. Strzałki zmieniają tydzień.</li>
+  <li><b>Dodaj składniki tygodnia do listy zakupów</b>: łączy te same produkty w jedną pozycję i grupuje według działów sklepu.</li>
+  <li><b>Zapisz ten tydzień jako plan</b> i <b>Wczytaj zapisany plan</b>: plan zapisuje się pod nazwą jako 7 dni względnych. Wczytujesz go na dowolny tydzień (<i>Zastąp tydzień</i> lub <i>Dodaj do tygodnia</i>). Zapisanych planów może być do 30.</li>
+  <li><b>Gotowy plan roślinny na 7 dni</b> otwiera Poradnik.</li>
+  <li><b>Zakupy</b>: dodawanie ręczne (np. &bdquo;2 szklanki mleka&rdquo;), odhaczanie, kopiowanie, udostępnianie i drukowanie listy.</li>
+  <li><b>Lodówka</b>: wpisz, co masz, a aplikacja pokaże pasujące przepisy i brakujące składniki, które możesz od razu dodać do zakupów.</li>
+</ul>
+
+<h2 id="poradnik">6. Poradnik i składniki aktywne</h2>
+<p>Zakładka <b>Poradnik</b> zawiera zasady zdrowej diety roślinnej, plan na 7 dni (z przyciskiem wstawienia do planera i listy zakupów), mity i fakty, wskazówki oraz informacje, kiedy skonsultować się z lekarzem. To materiał edukacyjny, nie porada medyczna.</p>
+<p>Sekcja <b>Składniki aktywne</b> w przepisie podsumowuje związki z użytych produktów. Każda karta pokazuje: na co wpływa, jak aktywować (np. rozgnieść czosnek i odczekać 10 minut), kiedy się traci (np. gotowanie, światło), uwagi (np. leki przeciwzakrzepowe) i siłę dowodów u ludzi.</p>
+
+<h2 id="tabela">7. Tabela składników</h2>
+<p>Przycisk <b>Tabela składników</b> na dole listy pokazuje wartości na 100 g używane do obliczeń. Dotknięcie wiersza otwiera edycję, <i>+ Nowy produkt</i> dodaje własny, a <i>Przywróć tabelę domyślną</i> kasuje wszystkie zmiany. Własne wartości wchodzą do kopii zapasowej.</p>
+
+<h2 id="kopie">8. Kopie zapasowe i przenoszenie przepisów</h2>
+<h3>Co zawiera kopia</h3>
+<table>
+  <tr><th>Przycisk</th><th>Zawartość pliku</th></tr>
+  <tr><td><b>Eksportuj kopię</b> (dół listy przepisów)</td><td>Wszystkie Twoje przepisy (także te utworzone na telefonie) ze zdjęciami, oceny, notatki, tagi, historia gotowania, kolekcje, plan, zapisane plany, lista zakupów, własne wartości odżywcze oraz informacja, które wbudowane przepisy usunięto (import ukrywa je też na drugim urządzeniu).</td></tr>
+  <tr><td><b>Kopia bez zdjęć</b></td><td>To samo, ale bez zdjęć. Plik jest wielokrotnie mniejszy, więc łatwiej go wysłać i otworzyć. Gdy kopia ze zdjęciami przekracza 100 MB (nie dostałaby się do importu), aplikacja sama pomija zdjęcia i informuje o tym.</td></tr>
+  <tr><td><b>Wyślij kopię</b></td><td>Pojawia się tylko tam, gdzie przeglądarka umie udostępniać pliki (telefony, część komputerów). Otwiera systemowe okno wysyłania (poczta, chmura, komunikator), bez szukania pliku w folderze Pobrane.</td></tr>
+  <tr><td><b>Eksport</b> (w widoku przepisu)</td><td>Jeden przepis z jego oceną, notatkami i zdjęciem.</td></tr>
+</table>
+<p>Plik ma nazwę <code>przewodnik-gotowania-RRRR-MM-DD.json</code> i trafia do folderu <i>Pobrane</i> (Android, komputer) lub do aplikacji <i>Pliki</i> (iPhone).</p>
+<h3>Przeniesienie przepisów z telefonu na komputer (i odwrotnie)</h3>
+<ol>
+  <li>Na urządzeniu źródłowym naciśnij <b>Eksportuj kopię</b>.</li>
+  <li>Prześlij plik na drugie urządzenie: e-mailem do siebie, przez dysk w chmurze (Google Drive, OneDrive, iCloud), komunikator, AirDrop, Udostępnianie w pobliżu lub kablem USB.</li>
+  <li>Na drugim urządzeniu naciśnij <b>Importuj kopię</b> i wybierz plik.</li>
+</ol>
+<h3>Jak działa import bez duplikatów</h3>
+<p>Import można wykonywać wielokrotnie, nic się nie namnoży. Dla każdego przepisu z pliku aplikacja sprawdza:</p>
+<table>
+  <tr><th>Sytuacja</th><th>Wynik</th></tr>
+  <tr><td>Przepis o tym samym identyfikatorze i identycznej treści już istnieje</td><td>Pominięty.</td></tr>
+  <tr><td>Przepis o tym samym identyfikatorze, ale inny w treści</td><td>Wygrywa nowsza edycja (aplikacja zapisuje datę ostatniej edycji przepisu). Wersja z pliku starsza lub równa lokalnej jest pomijana, więc import starej kopii nie cofnie Twoich poprawek. Jeśli żaden z przepisów nie ma daty (kopie sprzed tej funkcji), wczytywana jest wersja z pliku.</td></tr>
+  <tr><td>Ten sam przepis zapisany pod innym identyfikatorem (nazwa, porcje, składniki i treść kroków takie same), także wśród wbudowanych</td><td>Pominięty. Przepis o tej samej nazwie, ale innych krokach jest traktowany jako inny i dodawany, żeby nic nie zginęło. Takie pary znajdziesz później przyciskiem <i>Znajdź duplikaty</i>.</td></tr>
+  <tr><td>Nowy przepis</td><td>Dodany.</td></tr>
+</table>
+<p>Po imporcie pojawia się podsumowanie: ile przepisów dodano, zaktualizowano i pominięto.</p>
+<div class="warn"><b>Uwaga:</b> przy edycji tego samego przepisu na dwóch urządzeniach wygrywa ta wersja, którą zmieniono później. Druga edycja zostaje pominięta bez ostrzeżenia, więc jeśli zależy Ci na obu, zrób kopię na urządzeniu docelowym przed importem. Aplikacja nie synchronizuje się sama.</div>
+<div class="tip"><b>Zalecenie:</b> eksportuj kopię co kilka tygodni (aplikacja o tym przypomina) i zachowaj plik poza telefonem. Zapewnia to ochronę przy zgubieniu telefonu, czyszczeniu danych przeglądarki lub zmianie urządzenia.</div>
+
+<h2 id="problemy">9. Rozwiązywanie problemów</h2>
+<table>
+  <tr><th>Problem</th><th>Co zrobić</th></tr>
+  <tr><td>Po uruchomieniu nie widać moich przepisów</td><td>Prawdopodobnie otwarto inny adres lub port. Wejdź pod ten sam adres co wcześniej albo zaimportuj kopię.</td></tr>
+  <tr><td><code>start.bat</code> pisze, że nie znaleziono Pythona i Node.js</td><td>Zainstaluj jedno z nich i uruchom plik ponownie.</td></tr>
+  <tr><td>Brak opcji &bdquo;Zainstaluj aplikację&rdquo;</td><td>Strona musi być otwarta przez HTTPS (lub <code>localhost</code> na komputerze). Na iPhonie użyj Safari i opcji <i>Do ekranu początkowego</i>.</td></tr>
+  <tr><td>Aplikacja nie pokazuje nowej wersji</td><td>Zamknij ją całkowicie i uruchom ponownie przy włączonym internecie. W razie potrzeby odśwież stronę z pominięciem pamięci podręcznej (Ctrl+F5).</td></tr>
+  <tr><td>Timer nie dzwoni przy zablokowanym ekranie</td><td>Zezwól aplikacji na powiadomienia i wyłącz dla niej oszczędzanie baterii.</td></tr>
+  <tr><td>Komunikat o braku miejsca</td><td>Zrób kopię zapasową, usuń zdjęcia lub zbędne przepisy.</td></tr>
+  <tr><td>Import mówi, że to nie jest plik z przepisami</td><td>Wybierz plik <code>.json</code> wyeksportowany z tej aplikacji.</td></tr>
+  <tr><td>Mikrofon nie działa</td><td>Zezwól na dostęp do mikrofonu. Sterowanie głosem zależy od przeglądarki (najlepiej działa w Chrome i Edge).</td></tr>
+</table>
+
+<h2 id="bezpieczenstwo">10. Bezpieczeństwo danych i ograniczenia</h2>
+<ul>
+  <li><b>Pamięć trwała.</b> Przy starcie aplikacja prosi przeglądarkę o trwałe przechowywanie danych. Pod listą przepisów zobaczysz, czy je dostała, oraz ile miejsca zajmują dane. Przeglądarka może odmówić (zwłaszcza przy zwykłej karcie), a wtedy przy braku miejsca może usunąć dane sama. Instalacja jako aplikacja zwykle pomaga.</li>
+  <li><b>Kopia zapasowa to jedyna pewna ochrona.</b> Rób ją regularnie i trzymaj poza urządzeniem (przycisk <i>Wyślij kopię</i> ułatwia wysłanie jej do chmury lub na e-mail).</li>
+  <li><b>Brak synchronizacji.</b> Komputer i telefon wymieniają dane tylko przez plik kopii. Przy edycji tego samego przepisu na obu urządzeniach wygrywa nowsza edycja (rozdział 8).</li>
+  <li><b>Instalacja na telefonie</b> wymaga HTTPS (rozdział 3). Samo uruchomienie z <code>start.bat</code> daje tylko podgląd w tej samej sieci Wi-Fi.</li>
+  <li><b>Informacje o składnikach aktywnych</b> są edukacyjne i nie mają przypisów do pojedynczych badań. Weryfikuj je w przeglądach, np. NIH Office of Dietary Supplements, Linus Pauling Institute, EFSA i Cochrane. Przy chorobach, ciąży lub lekach skonsultuj się z lekarzem lub dietetykiem.</li>
+  <li><b>Kontrast kolorów</b> jasnego i ciemnego motywu spełnia wymagania WCAG AA (kontrast co najmniej 4,5:1) dla głównych par kolorów: tekst na przyciskach i znacznikach, tekst pomocniczy, ostrzeżenia (sprawdzone obliczeniowo, nie dla każdego elementu z osobna).</li>
+</ul>
+
+<h2 id="dev">11. Dla programisty: testy</h2>
+<ul>
+  <li><b>Logika</b>: w folderze <code>przepisy</code> uruchom <code>node pg/tests.js</code>. Testów nie trzeba instalować, wymagają tylko Node.js.</li>
+  <li><b>Interfejs w przeglądarce</b>: w folderze <code>e2e</code> wykonaj <code>npm install</code>, potem <code>node smoke.js</code>. Skrypt uruchamia lokalny serwer i zainstalowaną przeglądarkę Edge lub Chrome, a następnie sprawdza m.in. listę, otwieranie przepisu, zaznaczanie i usuwanie z cofnięciem, import bez duplikatów i scalanie według daty edycji, wyszukiwarkę duplikatów, czyszczenie planu po usunięciu i kopię bez zdjęć.</li>
+  <li>Po zmianie plików zwiększ <code>CACHE</code> w <code>sw.js</code>, aby zainstalowane kopie pobrały nową wersję.</li>
+</ul>
+
+<p class="muted" style="margin-top:32px">Wartości odżywcze i informacje o składnikach aktywnych mają charakter orientacyjny i edukacyjny. Nie zastępują porady lekarza lub dietetyka.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#2e7d5b">
+<title>Przewodnik gotowania</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="pg/style.css">
+</head>
+<body>
+<div id="timerBar" aria-live="polite"></div>
+<div class="app">
+  <nav class="nav" id="mainNav" aria-label="Sekcje">
+    <button data-sec="list" class="active">Przepisy</button>
+    <button data-sec="plan">Plan</button>
+    <button data-sec="shop">Zakupy<span class="badge hidden" id="shopBadge"></span></button>
+    <button data-sec="fridge">Lodówka</button>
+    <button data-sec="guide">Poradnik</button>
+  </nav>
+
+  <!-- ===== Lista przepisów ===== -->
+  <div id="listView">
+    <div class="head">
+      <h1>Przewodnik gotowania</h1>
+      <div class="row">
+        <button class="secondary small" id="themeBtn" aria-label="Motyw: auto / jasny / ciemny" title="Motyw">🌓</button>
+        <button class="secondary small" id="importTextBtn" title="Importuj przepis z tekstu lub strony">Import</button>
+        <button class="secondary small" id="selectBtn" title="Zaznacz wiele przepisów, aby je usunąć">Wybierz</button>
+        <button class="primary small" id="newBtn">+ Nowy</button>
+      </div>
+    </div>
+    <div class="banner hidden" id="resume"></div>
+    <div class="banner hidden" id="backupBanner"></div>
+    <div class="banner hidden" id="selectBar">
+      <span id="selCount"></span>
+      <span class="row"><button class="secondary small" id="selAll">Wszystkie</button><button class="secondary small" id="selNone">Żadne</button><button class="danger small" id="selDel">Usuń</button></span>
+    </div>
+    <input id="search" type="search" placeholder="Szukaj: nazwa, składnik, tag, notatka…" aria-label="Szukaj przepisów">
+    <details id="filterBox">
+      <summary id="filterSummary">Filtry</summary>
+      <div class="filter-row">
+        <label class="f">Min. ocena
+          <select id="fMin">
+            <option value="0">Wszystkie</option>
+            <option value="1">★ 1+</option><option value="2">★ 2+</option><option value="3">★ 3+</option>
+            <option value="4">★ 4+</option><option value="5">★ 5</option>
+          </select>
+        </label>
+        <label class="f">Sortuj
+          <select id="fSort">
+            <option value="def">Domyślnie</option><option value="rating">Ocena</option>
+            <option value="name">Nazwa A–Z</option><option value="stale">Dawno nie gotowane</option>
+            <option value="cooked">Najczęściej gotowane</option>
+          </select>
+        </label>
+      </div>
+      <div class="filter-row">
+        <label class="f">Grupuj wg<select id="fGroup"></select></label>
+        <label class="f">Kolekcja<select id="fCol"></select></label>
+      </div>
+      <div class="filter-row">
+        <div class="check-row"><label><input type="checkbox" id="fFav"> ♥ Tylko ulubione</label></div>
+      </div>
+      <div class="actions hidden" id="colManage" style="margin-bottom:10px">
+        <button class="secondary small" id="colRename">Zmień nazwę kolekcji</button>
+        <button class="danger small" id="colDelete">Usuń kolekcję</button>
+      </div>
+      <div id="filterTags"></div>
+      <button class="secondary small" id="clearFilters" style="margin-top:10px">Wyczyść filtry</button>
+    </details>
+    <div class="grid" id="recipeList"></div>
+    <div class="actions foot">
+      <button class="secondary small" id="exportBtn">Eksportuj kopię</button>
+      <button class="secondary small" id="exportLiteBtn">Kopia bez zdjęć</button>
+      <button class="secondary small hidden" id="shareBtn">Wyślij kopię</button>
+      <button class="secondary small" id="importBtn">Importuj kopię</button>
+      <button class="secondary small hidden" id="installBtn">Zainstaluj aplikację</button>
+      <button class="secondary small" id="nutriTableBtn">Tabela składników</button>
+      <a class="secondary small" id="helpLink" href="instrukcja.html">Instrukcja</a>
+      <button class="secondary small hidden" id="restoreBtn">Przywróć wbudowane przepisy</button>
+      <button class="secondary small" id="findDupBtn">Znajdź duplikaty</button>
+      <button class="danger small" id="deleteAllBtn">Usuń wszystkie przepisy</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="hidden">
+    </div>
+    <p class="note" id="persistNote"></p>
+    <p class="note">Przepisy, oceny, notatki, tagi, kolekcje i zdjęcia zapisują się w tej przeglądarce – eksport tworzy kopię zapasową. Parametry ustawiasz ręcznie na urządzeniu, aplikacja prowadzi krok po kroku.</p>
+  </div>
+
+  <!-- ===== Plan tygodnia ===== -->
+  <div id="planView" class="hidden">
+    <div class="head"><h1>Plan tygodnia</h1></div>
+    <div class="week-nav">
+      <button class="secondary small" id="weekPrev" aria-label="Poprzedni tydzień">&larr;</button>
+      <button class="secondary small" id="weekToday"></button>
+      <button class="secondary small" id="weekNext" aria-label="Następny tydzień">&rarr;</button>
+    </div>
+    <div id="planDays"></div>
+    <div class="actions"><button class="primary" id="planToShop">Dodaj składniki tygodnia do listy zakupów</button></div>
+    <div class="actions"><button class="secondary" id="planGuide">Gotowy plan roślinny na 7 dni</button></div>
+    <div class="actions"><button class="secondary" id="planSave">Zapisz ten tydzień jako plan</button><button class="secondary" id="planLoad">Wczytaj zapisany plan</button></div>
+  </div>
+
+  <!-- ===== Lista zakupów ===== -->
+  <div id="shopView" class="hidden">
+    <div class="head"><h1>Lista zakupów</h1></div>
+    <form class="add-row" id="shopForm" autocomplete="off">
+      <input id="shopInput" placeholder="Np. 2 szklanki mleka" aria-label="Nowa pozycja" maxlength="120">
+      <button class="primary small" type="submit">Dodaj</button>
+    </form>
+    <div id="shopList"></div>
+    <div class="actions foot">
+      <button class="secondary small" id="shopClearDone">Usuń zrobione</button>
+      <button class="danger small" id="shopClearAll">Wyczyść</button>
+      <button class="secondary small" id="shopCopy">Kopiuj</button>
+      <button class="secondary small" id="shopShare">Udostępnij</button>
+      <button class="secondary small" id="shopPrint">Drukuj</button>
+    </div>
+  </div>
+
+  <!-- ===== Tabela składników ===== -->
+  <div id="nutriView" class="hidden">
+    <div class="topbar">
+      <button class="back" id="ntBackBtn">&larr; Przepisy</button>
+      <h2>Tabela składników</h2>
+    </div>
+    <p class="muted" style="font-size:.85rem;margin:0 0 10px">Wartości na 100 g. Nazwa to początek nazwy składnika bez polskich znaków, np. „ciecierzyc” obejmuje ciecierzycę. Dotknięcie wiersza otwiera edycję.</p>
+    <input id="ntSearch" type="search" placeholder="Szukaj produktu…" aria-label="Szukaj w tabeli">
+    <div class="filter-row" style="margin:10px 0">
+      <div class="check-row"><label><input type="checkbox" id="ntOnly"> Tylko własne i zmienione</label></div>
+      <button class="primary small" id="ntNew" type="button">+ Nowy produkt</button>
+    </div>
+    <p class="muted" id="ntCount" style="font-size:.8rem;margin:0 0 6px"></p>
+    <table class="nutri-table">
+      <thead><tr><th>Produkt</th><th class="num">kcal</th><th class="num">B</th><th class="num">T</th><th class="num">W</th></tr></thead>
+      <tbody id="ntBody"></tbody>
+    </table>
+    <div class="actions foot"><button class="danger small" id="ntResetAll" type="button">Przywróć tabelę domyślną</button></div>
+    <p class="note">B = białko, T = tłuszcz, W = węglowodany (g). Zmiany zapisują się w tej przeglądarce i są w kopii zapasowej.</p>
+  </div>
+
+  <!-- ===== Poradnik ===== -->
+  <div id="guideView" class="hidden"></div>
+
+  <!-- ===== Co z lodówki ===== -->
+  <div id="fridgeView" class="hidden">
+    <div class="head"><h1>Co mam w lodówce?</h1></div>
+    <form class="add-row" id="fridgeForm" autocomplete="off">
+      <input id="fridgeInput" placeholder="Wpisz składniki, np. jajka, mleko, mąka" aria-label="Składniki w lodówce" maxlength="200">
+      <button class="primary small" type="submit">Dodaj</button>
+    </form>
+    <div class="chips" id="fridgeChips" style="margin-bottom:12px"></div>
+    <div id="fridgeResults"></div>
+  </div>
+
+  <!-- ===== Przepis ===== -->
+  <div id="recipeView" class="hidden">
+    <div class="topbar">
+      <button class="back" id="backBtn">&larr; Przepisy</button>
+      <h2 id="recipeTitle"></h2>
+    </div>
+    <div class="meta-box">
+      <img class="hero hidden" id="metaPhoto" alt="">
+      <div class="meta-row">
+        <div class="meta-info" id="metaInfo"></div>
+        <button class="heart-btn" id="favBtn" aria-label="Ulubiony" aria-pressed="false">♥</button>
+      </div>
+      <div id="metaRating" aria-label="Ocena"></div>
+      <div class="chips" id="metaTags"></div>
+      <div class="meta-actions">
+        <button class="secondary small" id="editBtn">Edytuj</button>
+        <button class="secondary small" id="dupBtn">Kopiuj i edytuj</button>
+        <button class="secondary small" id="printBtn">Drukuj</button>
+        <button class="secondary small" id="shareBtn">Udostępnij</button>
+        <button class="secondary small" id="exportOneBtn">Eksport</button>
+        <button class="danger small" id="delBtn">Usuń</button>
+      </div>
+    </div>
+    <div class="tabs" id="recipeTabs">
+      <button data-tab="ing" class="active">Składniki</button>
+      <button data-tab="cook">Gotowanie</button>
+      <button data-tab="notes">Notatki i tagi</button>
+    </div>
+
+    <div id="ingPanel" class="panel">
+      <p class="desc hidden" id="recipeDesc"></p>
+      <div class="servings">
+        <span>Porcje</span>
+        <select id="unitMode" aria-label="Jednostki">
+          <option value="orig">Jednostki: oryginalne</option>
+          <option value="weight">Wagowo (g)</option>
+          <option value="volume">Łyżki / szklanki</option>
+        </select>
+        <div class="stepper">
+          <button id="minus" aria-label="Mniej porcji">&minus;</button>
+          <b id="servingsVal"></b>
+          <button id="plus" aria-label="Więcej porcji">+</button>
+        </div>
+      </div>
+      <ul class="ingredients" id="ingList"></ul>
+      <details class="info" id="healthInfo">
+        <summary>Alergeny i wartości odżywcze</summary>
+        <div id="healthBody"></div>
+        <button class="secondary small" type="button" id="nutriEdit" style="margin-top:8px">Edytuj wartości składników</button>
+      </details>
+      <details class="info hidden" id="bioInfo">
+        <summary id="bioSummary">Składniki aktywne</summary>
+        <div id="bioBody"></div>
+      </details>
+      <div class="actions" style="margin-top:14px">
+        <button class="secondary" id="toShop">Do listy zakupów</button>
+        <button class="primary" id="startCook">Zaczynamy gotować</button>
+      </div>
+    </div>
+
+    <div id="cookPanel" class="panel hidden">
+      <div class="cook-tools">
+        <span class="muted" id="wakeState" style="font-size:.8rem"></span>
+        <div class="row">
+          <button id="speakBtn" aria-label="Czytaj krok na głos">🔊</button>
+          <button id="micBtn" class="hidden" aria-label="Sterowanie głosem" title="Powiedz: dalej, wstecz, start, stop, powtórz">🎤</button>
+          <button id="bigBtn" aria-label="Duży tryb">Aa</button>
+        </div>
+      </div>
+      <div class="progress" id="progress"></div>
+      <div class="step-num" id="stepNum"></div>
+      <p class="step-text" id="stepText"></p>
+      <div class="step-ings hidden" id="stepIngs"></div>
+      <div class="params" id="params"></div>
+      <div class="flags" id="flags"></div>
+      <div class="timer" id="timer"></div>
+      <div class="actions" id="timerActions"></div>
+      <div class="actions" style="margin-top:8px">
+        <button class="secondary" id="prev">Wstecz</button>
+        <button class="primary" id="next">Dalej</button>
+      </div>
+      <div class="actions" style="margin-top:8px"><button class="secondary small" id="customTimer">+ Własny timer</button></div>
+    </div>
+
+    <div id="notesPanel" class="panel hidden">
+      <h3 style="margin-top:0">Tagi</h3>
+      <div id="tagPicker"></div>
+      <h3>Kolekcje</h3>
+      <div id="colPicker"></div>
+      <h3>Historia gotowania</h3>
+      <div id="history"></div>
+      <h3>Notatki</h3>
+      <textarea id="noteInput" rows="3" maxlength="2000" placeholder="Np. mniej soli, dodać chili, rodzina zachwycona…"></textarea>
+      <div class="actions" style="margin-top:8px"><button class="primary small" id="addNote">Dodaj notatkę</button></div>
+      <div id="noteList"></div>
+    </div>
+  </div>
+
+  <!-- ===== Edytor ===== -->
+  <div id="editView" class="hidden">
+    <div class="topbar">
+      <button class="back" id="editCancel">&larr; Anuluj</button>
+      <h2 id="editHeading">Nowy przepis</h2>
+    </div>
+    <form id="editForm" class="panel form" autocomplete="off">
+      <label class="f">Nazwa przepisu<input id="fName" required maxlength="80"></label>
+      <div class="photo-edit">
+        <img id="fPhotoImg" class="hidden" alt="Zdjęcie przepisu">
+        <button type="button" class="secondary small" id="fPhotoBtn">Dodaj zdjęcie</button>
+        <button type="button" class="danger small hidden" id="fPhotoDel">Usuń zdjęcie</button>
+        <input type="file" id="fPhotoFile" accept="image/*" class="hidden">
+      </div>
+      <div class="row2">
+        <label class="f">Ikona<select id="fEmoji"></select></label>
+        <label class="f">Porcje<input id="fServ" type="number" min="1" max="24" value="4"></label>
+      </div>
+      <div class="row3">
+        <label class="f">Przygot. (min)<input id="fPrep" type="number" min="0" max="999"></label>
+        <label class="f">Całkowity (min)<input id="fTotal" type="number" min="0" max="9999" placeholder="auto"></label>
+        <label class="f">Trudność<select id="fDiff"></select></label>
+      </div>
+      <label class="f">Opis / wskazówki<textarea id="fDesc" rows="2" maxlength="1000"></textarea></label>
+
+      <h3>Składniki</h3>
+      <div id="fIngs"></div>
+      <button type="button" class="secondary small" id="addIng">+ Składnik</button>
+
+      <h3>Kroki (jak w Thermomix / Cookidoo)</h3>
+      <div id="fSteps"></div>
+      <button type="button" class="secondary small" id="addStep">+ Krok</button>
+
+      <h3>Tagi</h3>
+      <div id="fTags"></div>
+
+      <p class="err hidden" id="formErr" role="alert"></p>
+      <div class="actions" style="margin-top:16px"><button type="submit" class="primary">Zapisz przepis</button></div>
+    </form>
+  </div>
+</div>
+
+<dialog id="importDlg">
+  <h2 style="margin-bottom:10px">Import przepisu</h2>
+  <p class="muted" style="font-size:.85rem;margin-top:0">Wklej tekst przepisu (sekcje „Składniki” i „Przygotowanie”), kod źródłowy strony z przepisem lub JSON-LD. Możesz też podać adres – jeśli strona na to pozwala.</p>
+  <div class="add-row"><input id="impUrl" type="url" placeholder="https://…" aria-label="Adres strony"><button class="secondary small" type="button" id="impFetch">Pobierz</button></div>
+  <textarea id="impText" rows="9" aria-label="Tekst przepisu"></textarea>
+  <p class="err hidden" id="impErr" role="alert"></p>
+  <div class="actions" style="margin-top:10px">
+    <button class="secondary small" type="button" id="impCancel">Anuluj</button>
+    <button class="primary small" type="button" id="impGo">Analizuj</button>
+  </div>
+</dialog>
+
+<dialog id="dupDlg">
+  <h2 style="margin-bottom:10px">Duplikaty przepisów</h2>
+  <p class="muted" style="font-size:.85rem;margin-top:0">Przepisy o tej samej nazwie (z pominięciem dopisku „(kopia)”), porcjach i składnikach. Sprawdź je przed usunięciem, bo kroki mogą się różnić.</p>
+  <div id="dupList"></div>
+  <div class="actions" style="margin-top:12px"><button class="primary small" type="button" id="dupClose">Zamknij</button></div>
+</dialog>
+
+<dialog id="plansDlg">
+  <h2 style="margin-bottom:10px">Zapisane plany</h2>
+  <p class="muted" style="font-size:.85rem;margin-top:0">Plan jest wczytywany na tydzień, który masz teraz otwarty w planerze.</p>
+  <div id="plansList"></div>
+  <div class="actions" style="margin-top:12px"><button class="primary small" type="button" id="plansClose">Zamknij</button></div>
+</dialog>
+
+<dialog id="askDlg">
+  <h2 id="askTitle" style="margin-bottom:10px"></h2>
+  <input id="askInput" maxlength="60" aria-labelledby="askTitle">
+  <div class="actions" style="margin-top:12px">
+    <button class="secondary small" type="button" id="askCancel">Anuluj</button>
+    <button class="primary small" type="button" id="askOk">OK</button>
+  </div>
+</dialog>
+
+<dialog id="nutriDlg">
+  <h2 style="margin-bottom:10px">Wartości odżywcze składników</h2>
+  <div id="nutriListPane">
+    <p class="muted" style="font-size:.85rem;margin-top:0">Wartości na 100 g. Zmiany zapisują się w tej przeglądarce i obowiązują we wszystkich przepisach.</p>
+    <div id="nutriList"></div>
+    <div class="actions" style="margin-top:12px"><button class="primary small" type="button" id="nutriClose">Zamknij</button></div>
+  </div>
+  <form id="nutriForm" class="hidden" autocomplete="off">
+    <h3 id="nutriName" style="margin:0 0 4px"></h3>
+    <p class="muted" id="nutriScope" style="font-size:.8rem;margin:0 0 10px"></p>
+    <label class="f hidden" id="nutriNameWrap">Nazwa produktu<input name="name" maxlength="60" placeholder="Np. ryż gotowany"></label>
+    <div class="nutri-grid">
+      <label class="f">Kalorie (kcal / 100 g)<input name="kcal" inputmode="decimal" maxlength="7" required></label>
+      <label class="f">Białko (g / 100 g)<input name="p" inputmode="decimal" maxlength="6" required></label>
+      <label class="f">Tłuszcz (g / 100 g)<input name="f" inputmode="decimal" maxlength="6" required></label>
+      <label class="f">Węglowodany (g / 100 g)<input name="c" inputmode="decimal" maxlength="6" required></label>
+      <label class="f">Gęstość (g / ml), opcjonalnie<input name="d" inputmode="decimal" maxlength="6"></label>
+      <label class="f">Masa 1 sztuki (g), opcjonalnie<input name="g" inputmode="decimal" maxlength="6"></label>
+    </div>
+    <p class="err hidden" id="nutriErr" role="alert"></p>
+    <div class="actions" style="margin-top:10px">
+      <button class="secondary small" type="button" id="nutriBack">Wstecz</button>
+      <button class="danger small hidden" type="button" id="nutriReset">Przywróć z tabeli</button>
+      <button class="primary small" type="submit">Zapisz</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="printArea"></div>
+<div id="toast" class="hidden" role="status"></div>
+<datalist id="unitList">
+  <option value="g"><option value="kg"><option value="ml"><option value="l"><option value="szt">
+  <option value="łyżka"><option value="łyżeczka"><option value="szklanka"><option value="ząbek"><option value="szczypta"><option value="plaster">
+</datalist>
+
+<script src="pg/logic.js"></script>
+<script src="pg/recipes.js"></script>
+<script src="pg/recipes-plan.js"></script>
+<script src="pg/recipes-garden.js"></script>
+<script src="pg/guide.js"></script>
+<script src="pg/bioactive.js"></script>
+<script src="pg/ui-core.js"></script>
+<script src="pg/ui-recipes.js"></script>
+<script src="pg/ui-manage.js"></script>
+<script src="pg/ui-backup.js"></script>
+<script src="pg/ui-planning.js"></script>
+<script src="pg/ui-guide.js"></script>
+<script src="pg/ui-nutri.js"></script>
+<script src="pg/main.js"></script>
+</body>
+</html>
